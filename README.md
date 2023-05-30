@@ -12,4 +12,4 @@ The target audience of YAD includes instructors and developers in any programmin
 * To install YAD, run the following command
 * `pip install Y4D`
 
-### For more details, plase check: https://RundRasheed.github.io/YAD/
+### For more details, plase check: https://AutoGradingDeputy.github.io/YAD/
