@@ -24,13 +24,13 @@ The target audience of YAD includes instructors and developers in any programmin
 
 ## YAD tools
 ### [Isolator](./yad-doc/docs/isolator.md)
-Isolates a function or list of functions or classes inside the code and replace them with their counterparts from the reference code.
+Isolates a functions or classes inside the code and replaces them with their counterparts from the reference code.
 ### [Restrictor](./yad-doc/docs/restrictor.md)
-Restricts the use of certain functions, libraries, and keywords inside the code.
+Restricts the use of certain functions, classes, libraries, and keywords inside the code.
 ### [CheckAPI](./yad-doc/docs/checkAPI.md)
-Checks if signature of all functions in the code follows all signatures in a given code.
+Checks if signature of all functions and classes in the code follow all signatures in a given code.
 ### [Comment Controller](./yad-doc/docs/commentController.md)
-Extracts and deletes comments, comments out a given function or clas in the code.
+Extracts and deletes comments, comments out a given function or class in the code.
 
 ## Supported Language 
 <div class="bs-callout bs-callout-warning">
