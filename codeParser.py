@@ -325,8 +325,6 @@ def positions ( source: str, type: str, prototype: str, option = 0):
         
     #Compiling the code
     data = prepareData(source)
-    if data == ["error"]:
-        return data
     
     #Varibale for saving position of anything the user is searching for.
     pos =[]
@@ -338,4 +336,3 @@ def positions ( source: str, type: str, prototype: str, option = 0):
         pos = findLocationFunction( data, prototype, source)  
         
     return pos
-                    
