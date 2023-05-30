@@ -1,21 +1,23 @@
 import json
 import clang.cindex
-import commentController
+import re
 from pathlib import Path
 
 def findLocationFunction(data, prototype: str, source):
-    #check for static, virtual, pure virtual, and constru
+    #Check for static, virtual, pure virtual, and constructors
     is_static = False
     is_pure = False
     is_virtual = False
     has_initializer = "false"
     
-    #Check constructos with initializer lists
+    #Check constructors with initializer lists
     if len(prototype.split("(")) > 2:
         has_initializer = "true" 
+
     #Check static functions
     if len(prototype.split("static")) > 1:
         is_static= True
+
     #Check virtual and pure virtual functions
     if len(prototype.split("virtual")) > 1:
         is_virtual= True
@@ -26,7 +28,7 @@ def findLocationFunction(data, prototype: str, source):
             prototype = prototype.split("= 0")[0]
             is_pure= True
             
-    #label function by its type 
+    #Label function by its type 
     if len(prototype.split("template"))> 1 :
         if len(prototype.split("::")) > 1 :
             type = "template_member_function"
@@ -37,7 +39,7 @@ def findLocationFunction(data, prototype: str, source):
     else:
         type="function"
     
-    #extract information from function prototype
+    #Extract information from function prototype
     if type == "member_function" or type == "template_member_function":
         parent_class = prototype.split("::")[0].strip().split(" ")[-1]
         returntype = prototype.split(parent_class)[0].strip().split(" ")[-1]
@@ -64,7 +66,7 @@ def findLocationFunction(data, prototype: str, source):
     qualtype = returntype + params
     qualtype = qualtype.replace(" ", "")
 
-    #retrieve position of function
+    #Retrieve position of function
     pos=[]
     if type == "function":
         for item in data['nodes']:
@@ -87,7 +89,7 @@ def findLocationFunction(data, prototype: str, source):
                     end =-1
                     with open(source, "r") as source_file:
                         lines = source_file.readlines()    
-                    #check for forward declaration 
+                    #Check for forward declaration 
                     openb =0
                     for char in lines[start-1]:
                         if char == '{':
@@ -95,7 +97,7 @@ def findLocationFunction(data, prototype: str, source):
                     if openb == 0:
                         pos += [start, start, type, item['access_type']]
                         continue
-                    #find when the function ends 
+                    #Find where the function ends 
                     i = start 
                     while(True):
                         for char in lines[i]:
@@ -122,7 +124,7 @@ def findLocationFunction(data, prototype: str, source):
                 end = item['end']
                 start = item['start']
                 pos += [start, end, type, item['access_type']] 
-    
+        
     return pos
 
 def findLocationClass(data, prototype: str, source, type: str, iteration = 0):
@@ -169,12 +171,6 @@ def findLocationClass(data, prototype: str, source, type: str, iteration = 0):
                             returnType = item['prototype'].split(" ")[0]
                             func_prototype = returnType +" " + name + "::" +item['displayname']
                             pos+= findLocationFunction(data, func_prototype, source)
-                    if (item['kind'] == "CONSTRUCTOR" or item['kind'] == "DESTRUCTOR" )and item['parent_class'] == "class "+ name:
-                        returnType = item['prototype'].split(" ")[0]
-                        func_prototype = name + "::" +item['displayname']
-                        if item["initializer_list"] == "true":
-                            func_prototype += "("
-                        pos+= findLocationFunction(data, func_prototype, source)
             #check template member functions  
             if item["kind"] == "FUNCTION_TEMPLATE":
                 start_line = item['start']
@@ -207,29 +203,30 @@ def findLocationClass(data, prototype: str, source, type: str, iteration = 0):
 
     return pos
  
+
+
 #find if a constructor has expression initializer list
 def hasInitializerList(cursor):
     for child in cursor.get_children():
         if child.kind.is_expression():
             return True
     return False
-def prepareData (source: str, hide: bool):
-    
-    index = clang.cindex.Index.create()
-    tu = index.parse(source)
-    
-    #check if source code compiles
-    if hide:
-        if len(tu.diagnostics) > 0:
-            print("Error: " + source + " doesn't compile successfully")
-            return ["error"]
 
-    #comment out libraries and include in source file
-    commentController.includePreparer(source)
+
+
+#Compile code and return parse tree
+def prepareData (source: str):
     
-    #Call again with code without libraries and using namespace
+    #Get Code from source
+    with open(source, 'r') as file:
+        source = file.read()
+
+    #String manipulate source for parse to work (removing libraries and using namespace)
+    source = re.sub(r'^#include\s*[\s\S][<"]\S+[>"]$', r'// \g<0>', source, flags=re.MULTILINE)
+    source = re.sub(r'^\s*using\s+namespace\s+\S+;$', r'// \g<0>', source, flags=re.MULTILINE)
+
     index = clang.cindex.Index.create()
-    tu = index.parse(source)
+    tu = index.parse('dud.cpp', unsaved_files=[('dud.cpp', source)])
     
     output = {"nodes": []}
     friendFlag = False
@@ -245,7 +242,6 @@ def prepareData (source: str, hide: bool):
                 
         #Save access type of member functions, anything else will have value "invalid"              
         access_type = str(node.access_specifier).split(".")[1]
-        
         #Save name of parent class
         if access_type == "INVALID":
             parent_class = ""
@@ -258,7 +254,7 @@ def prepareData (source: str, hide: bool):
             elif parent.kind == clang.cindex.CursorKind.STRUCT_DECL:
                 parent_class = "struct " + str(parent.spelling)
             
-        if node.kind == clang.cindex.CursorKind.CLASS_DECL or node.kind == clang.cindex.CursorKind.STRUCT_DECL:
+        if node.kind == clang.cindex.CursorKind.CLASS_DECL:
             classPointer = 0
             friendFlag = False
             
@@ -271,12 +267,14 @@ def prepareData (source: str, hide: bool):
 
         elif friendFlag:
             friend = node.spelling
-            if len(friend.split("class")) == 1 and len(friend.split("struct")) == 1:
+            if len(friend.split("class")) == 1: #check this: or len(friend.split("struct")):
                 friend = node.type.spelling.split('(')[0] + node.displayname
             output["nodes"][classPointer]["friend_with"].append(friend)
             friendFlag = False
 
         classPointer = classPointer - 1
+
+        #Backbone of the project, retuning parse tree information.
         node_dict = {
             "kind": str(node.kind.name),
             "spelling": node.spelling,
@@ -303,18 +301,18 @@ def prepareData (source: str, hide: bool):
     
     jsonFormat = json.dumps(output, indent=4)
     data = json.loads(jsonFormat)
-    
-    # Revert commenting changes done before
-    commentController.includeRevert(source)
+
     return data
 
-def positions ( source: str, type: str, prototype: str, checkerror, option = 0):
+
+#Return postions of anything the user is searching for.
+def positions ( source: str, type: str, prototype: str, option = 0):
     source_path = Path(source)
     if source_path.exists() == False:
         print("Error: " + source + " doesn't exist")
         return ["error"]
     
-    #checking if its .h file and converting it to .cpp, due to libclang capabilities 
+    #Checking if it is a .h file and converting it to .cpp, due to libclang requirements
     file_extension = source_path.suffix
     if file_extension == ".h":
         file_name = source_path.stem
@@ -325,9 +323,12 @@ def positions ( source: str, type: str, prototype: str, checkerror, option = 0):
             destination.write(content)
         source = destination_file
         
-    data = prepareData(source, checkerror)
+    #Compiling the code
+    data = prepareData(source)
     if data == ["error"]:
         return data
+    
+    #Varibale for saving position of anything the user is searching for.
     pos =[]
     
     if type == "class" or type == "struct":
