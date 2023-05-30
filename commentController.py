@@ -8,7 +8,7 @@ app = typer.Typer()
 def commentMaker(source: str, type: str, name: str, isolate =0, option=0, output = ""):
 
     #Find where the classes or functions start
-    position = codeParser.positions(source, type , name, option, False)
+    position = codeParser.positions(source, type , name, option)
     if position == ["error"]:
         return
     if position == []:
@@ -165,34 +165,6 @@ def CommentOutFunction(
     This tool will comment out a function implementation from a C++ file using a function prototype (equivalent to deleting the function).
     """
     commentMaker(source, "function" , prototype, isolate, 0, output)
-
-
-
-#This function comments out all includes and using namespaces, this is needed to make libclang work properly
-def includePreparer(input: str):
-
-    with open(input, 'r') as f:
-        source = f.read()
-
-    source = re.sub(r'^#include\s*[\s\S][<"]\S+[>"]$', r'// \g<0>', source, flags=re.MULTILINE)
-    source = re.sub(r'^\s*using\s+namespace\s+\S+;$', r'// \g<0>', source, flags=re.MULTILINE)
-
-    with open(input, 'w') as f:
-        f.write(source)
-
-
-
-#This function comments out all includes and using namespaces, this is needed to make libclang work properly
-def includeRevert(input: str):
-
-    with open(input, 'r') as f:
-        source = f.read()
-
-    source = re.sub(r'^//\s*#include\s*', r'#include ', source, flags=re.MULTILINE)
-    source = re.sub(r'^\s*//\s*using\s+namespace\s*', r'using namespace ', source, flags=re.MULTILINE)
-
-    with open(input, 'w') as f:
-        f.write(source)
 
 
 
