@@ -15,7 +15,7 @@ def scopeGetter(source:str, scope:str ):
         type = "function"
     
     #Find where function or class is
-    pos = codeParser.positions(source, type, scope, True)
+    pos = codeParser.positions(source, type, scope)
     if pos == ["error"]:
         return ["error"]
     if pos == []:
@@ -186,17 +186,13 @@ def restrict(source: str  = typer.Argument(..., help="The path of the .cpp or .h
                     exactCount += 1
                     if exactCount == 1:
                         if critData['scope'].lower() == "global" or critData['scope'] == "":
-                            data = codeParser.prepareData(newSource, True)
-                            if data == ["error"]:
-                                return False
+                            data = codeParser.prepareData(newSource)
                         else:
                             scopeG = scopeGetter(newSource, critData['scope'])
                             file = open("restrictorGen.cpp", "w")
                             file.write(scopeG)
                             file.close()
-                            data = codeParser.prepareData("restrictorGen.cpp", True)
-                            if data == ["error"]:
-                                return False
+                            data = codeParser.prepareData("restrictorGen.cpp")
                         for decl in data['nodes']:
                             if decl['kind'] == "CLASS_DECL" and decl['start'] != decl['end']:
                                 compareCount += 1
@@ -227,17 +223,13 @@ def restrict(source: str  = typer.Argument(..., help="The path of the .cpp or .h
                     exactCount += 1
                     if exactCount == 1:
                         if critData['scope'].lower() == "global" or critData['scope'] == "":
-                             data = codeParser.prepareData(newSource, True)
-                             if data == ["error"]:
-                                return False
+                             data = codeParser.prepareData(newSource)
                         else:
                             scopeG = scopeGetter(newSource, critData['scope'])
                             file = open("restrictorGen.cpp", "w")
                             file.write(scopeG)
                             file.close()
-                            data = codeParser.prepareData("restrictorGen.cpp", True)
-                            if data == ["error"]:
-                                return False
+                            data = codeParser.prepareData("restrictorGen.cpp")
                         for decl in data['nodes']:
                             if decl['kind'] == "FUNCTION_DECL" and decl['start'] != decl['end']:
                                 compareCount += 1
@@ -269,17 +261,13 @@ def restrict(source: str  = typer.Argument(..., help="The path of the .cpp or .h
                     exactCount += 1
                     if exactCount == 1:
                         if critData['scope'].lower() == "global" or critData['scope'] == "":
-                             data = codeParser.prepareData(newSource, True)
-                             if data == ["error"]:
-                                return False
+                             data = codeParser.prepareData(newSource)
                         else:
                             scopeG = scopeGetter(newSource, critData['scope'])
                             file = open("restrictorGen.cpp", "w")
                             file.write(scopeG)
                             file.close()
-                            data = codeParser.prepareData("restrictorGen.cpp", True)
-                            if data == ["error"]:
-                                return False
+                            data = codeParser.prepareData("restrictorGen.cpp")
                         for decl in data['nodes']:
                             if decl['kind'] == "CXX_METHOD" and decl['access_type'] == access and (decl['start'] != decl['end'] or decl['is_virtual_method'] == True):
                                 if decl['is_virtual_method'] == True:
@@ -430,9 +418,7 @@ def classRestrict(source: str  = typer.Argument(..., help="The path of the .cpp 
     
     #Check if global scope or not, if not then use scopeGetter to get everything in the scope defined by the user
     if scope.lower() == "global" or scope == "":
-        data = codeParser.prepareData(source, True)
-        if data == ["error"]:
-            return False
+        data = codeParser.prepareData(source)
         with open(source, 'r') as f:
             scopeG = f.read()
     else:
@@ -442,9 +428,7 @@ def classRestrict(source: str  = typer.Argument(..., help="The path of the .cpp 
         file = open("restrictorGen.cpp", "w")
         file.write(scopeG)
         file.close()
-        data = codeParser.prepareData("restrictorGen.cpp", False)
-        if data == ["error"]:
-            return False
+        data = codeParser.prepareData("restrictorGen.cpp")
 
     prototype = prototype.strip()
     empty = []
@@ -497,9 +481,7 @@ def funcRestrict(source: str  = typer.Argument(..., help="The path of the .cpp o
     
     #Check if global scope or not, if not then use scopeGetter to get everything in the scope defined by the user
     if scope.lower() == "global" or scope == "":
-        data = codeParser.prepareData(source, True)
-        if data == ["error"]:
-            return False
+        data = codeParser.prepareData(source)
         with open(source, 'r') as f:
             scopeG = f.read()
     else:
@@ -509,9 +491,7 @@ def funcRestrict(source: str  = typer.Argument(..., help="The path of the .cpp o
         file = open("restrictorGen.cpp", "w")
         file.write(scopeG)
         file.close()
-        data = codeParser.prepareData("restrictorGen.cpp", False)
-        if data == ["error"]:
-            return False
+        data = codeParser.prepareData("restrictorGen.cpp")
 
     empty = []
     #Check if function exists and print true or false according to restriction
@@ -563,9 +543,7 @@ def accessRestrict(source: str  = typer.Argument(..., help="The path of the .cpp
     
     #Check if global scope or not, if not then use scopeGetter to get everything in the scope defined by the user as well as preparing data for access_type search
     if scope.lower() == "global" or scope == "":
-        data = codeParser.prepareData(source, True)
-        if data == ["error"]:
-            return False
+        data = codeParser.prepareData(source)
     else:
         scopeG = scopeGetter(source, scope)
         if scopeG == ["error"]:
@@ -573,9 +551,7 @@ def accessRestrict(source: str  = typer.Argument(..., help="The path of the .cpp
         file = open("restrictorGen.cpp", "w")
         file.write(scopeG)
         file.close()
-        data = codeParser.prepareData("restrictorGen.cpp", False)
-        if data == ["error"]:
-            return False
+        data = codeParser.prepareData("restrictorGen.cpp")
 
     #Variables used in the following if statement to find if function is private
     if len(prototype.split("virtual")) == 1 and len(prototype.split("static")) == 1:
@@ -607,9 +583,7 @@ def checkAPI(source: str  = typer.Argument(..., help="The path of the .cpp or .h
         print("Invalid -o input")
         return False
 
-    data = codeParser.prepareData(compare, True)
-    if data == ["error"]:
-        return False
+    data = codeParser.prepareData(compare)
 
     #Makes sure that restriction inputted is a viable restriction
     if restriction.lower() not in ["exactly", "forbidden", "at_least"]:
