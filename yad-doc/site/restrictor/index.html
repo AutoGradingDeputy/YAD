@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+    <link rel="canonical" href="https://yad.github.io/restrictor/">
+    <link rel="shortcut icon" href="../img/favicon.ico">
+
+    
+    <title>Restrictor - Yad Documentation</title>
+    
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/v4-shims.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.min.css">
+    <link href='//rsms.me/inter/inter.css' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
+    <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+    <link href="../css/base.min.css" rel="stylesheet">
+    <link href="../css/cinder.min.css" rel="stylesheet">
+
+    
+        
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.0/build/styles/github.min.css">
+        
+    
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+            <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+        <![endif]-->
+
+    
+
+     
+</head>
+
+<body>
+
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+
+            
+              <a class="navbar-brand" href="..">Yad Documentation</a>
+            
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="..">Home</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../isolator/">Isolator</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../commentController/">CommentController</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../checkAPI/">CheckAPI</a>
+                    </li>
+                
+                
+                
+                    <li class="active">
+                        <a href="./">Restrictor</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../reference/">Reference</a>
+                    </li>
+                
+                
+                </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                            <i class="fas fa-search"></i> Search
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../checkAPI/">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="next" href="../reference/">
+                            Next <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+    <div class="container">
+        
+        
+        <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="first-level active"><a href="#restrcitor">Restrcitor</a></li>
+            <li class="second-level"><a href="#what-is-restrictor">What is Restrictor?</a></li>
+                
+            <li class="second-level"><a href="#types-of-restriction">Types of Restriction:</a></li>
+                
+            <li class="second-level"><a href="#how-does-a-single-criterion-restriction-work">How does a single criterion restriction work?</a></li>
+                
+                <li class="third-level"><a href="#example-commands">Example Commands:</a></li>
+            <li class="second-level"><a href="#how-does-many-criteria-restriction-work">How does many criteria restriction work?</a></li>
+                
+                <li class="third-level"><a href="#many-criteria-command">Many Criteria Command:</a></li>
+                <li class="third-level"><a href="#output-options">Output Options</a></li>
+                <li class="third-level"><a href="#restriction-file-structure">Restriction File Structure:</a></li>
+                <li class="third-level"><a href="#restrictions-file-example">Restrictions File Example</a></li>
+            <li class="second-level"><a href="#error-scenarios">Error Scenarios:</a></li>
+                
+    </ul>
+</div></div>
+        <div class="col-md-9" role="main">
+
+<h1 id="restrcitor">Restrcitor</h1>
+<h2 id="what-is-restrictor">What is Restrictor?</h2>
+<p>The Restrictor CLI tool allows the user to restrict the use of certain criterion or many criteria in a source file, the restriction follows one of three types of restrition explained below.</p>
+<h2 id="types-of-restriction">Types of Restriction:</h2>
+<ul>
+<li>
+<p><strong>at_least:</strong> must contain the search criterion in source.cpp, other components of the same criterion can exist.</p>
+</li>
+<li>
+<p><strong>exactly:</strong> must contain the search criterion in source.cpp, other components of the same criterion must not exist (not available for keyword criterion, explained below).</p>
+</li>
+<li>
+<p><strong>forbidden:</strong> must not contain the search criterion, other components of the same criterion can exist.</p>
+</li>
+</ul>
+<h2 id="how-does-a-single-criterion-restriction-work">How does a single criterion restriction work?</h2>
+<p>Each criterion has a unique character to use with the command, the characters are explained below, the output of the commands is True (following restriction) or False (not following restriction):</p>
+<ul>
+<li>
+<p><strong>l:</strong> used for restricting libraries, must input only the library name, this is the only criteria that doesn't allow scope definition (don't input #include).</p>
+</li>
+<li>
+<p><strong>k:</strong> used for restricting keywords, this feature does an exact match search need so you need to input the exact keyword you are looking for (can be used to find recursion or iteration). <strong>Important note</strong>: preferably don't use global scope, specify a certain scope for accuracy.</p>
+</li>
+<li>
+<p><strong>c:</strong> used for restricting classes, input class prototype.</p>
+</li>
+<li>
+<p><strong>f:</strong> used for restricting functions without access types (functions outside of classes), input function prototype.</p>
+</li>
+<li>
+<p><strong>a:</strong> used for restricting functions with their access types (Public/Protected/Private), input function access type followed by function prototype.</p>
+</li>
+</ul>
+<h3 id="example-commands">Example Commands:</h3>
+<ul>
+<li>
+<p><strong>l:</strong> <code>restrict l source.cpp exactly iostream</code> <h6> Checking if only iostream exists in code (it must exist). </h6></p>
+</li>
+<li>
+<p><strong>k:</strong> <code>restrict k source.cpp at_least follow "int follow(int, int)"</code> <h6> Checking recursion exists (it must exist).</h6></p>
+</li>
+<li>
+<p><strong>c:</strong> <code>restrict c source.cpp forbidden "class shape" global</code> <h6> Checking if class shape exists in code (it must not exist).</h6></p>
+</li>
+<li>
+<p><strong>f:</strong> <code>restrict f source.cpp at_least "int follow(int, float)" global</code> <h6> Checking if function int follow(int, float) exists (it must exist).</h6></p>
+</li>
+<li>
+<p><strong>a:</strong> <code>restrict a source.cpp exactly "float shape::area()" "class shape" private</code> <h6> Checks if the only private function in class shape is area() (it must exist).</h6></p>
+</li>
+</ul>
+<h2 id="how-does-many-criteria-restriction-work">How does many criteria restriction work?</h2>
+<ul>
+<li><strong>r:</strong> used for restricting source file according to a YAML restrictions file, the format of the restrictions file is explained in Restrictions File section found below.</li>
+</ul>
+<h3 id="many-criteria-command">Many Criteria Command:</h3>
+<p><code>restrict r source.cpp rules.YAML</code> -Returns the number of missing functions/classes following by the number of extra functions/classes.</p>
+<h3 id="output-options">Output Options</h3>
+<p>This command includes an output option <strong>-o</strong>, the output option is follow by n (number of missing and extra functions) which is the default value or v (verbose, a list of violations with a simple explanation) both n and v are not case sensitive, an example command including v:</p>
+<p><code>restrict r source.cpp rules.YAML -o v</code> -Returns a list of violations with minor explanation.</p>
+<h3 id="restriction-file-structure">Restriction File Structure:</h3>
+<p>The restrictions file is a YAML file type, this file is required for the functionality of the many criteria command.</p>
+<ul>
+<li>
+<p><strong> Criteria supported: </strong>   libraries, keywords, classes, functions, public functions, private functions or protected Functions.
+    For each criteria:</p>
+<ul>
+<li><strong> Restriction: </strong><ul>
+<li>at_least </li>
+<li>exactly </li>
+<li>forbidden </li>
+</ul>
+</li>
+<li><strong> Scope: </strong> <ul>
+<li>Choose the scope of restriction, such as "int functionC(int, int)" </li>
+<li>Default value of scope is global when left empty. </li>
+</ul>
+</li>
+<li><strong> Names: </strong><ul>
+<li>Specify what you want to restrict. </li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="restrictions-file-example">Restrictions File Example</h3>
+<p>You can find the sample file in the GitHub files or below:</p>
+<pre><code>libraries:
+  restriction: at_least
+  scope: global
+  names:
+    - algorithm
+    - iostream
+
+keywords:
+  restriction: exactly
+  scope: int functionC(int, int)
+  names:
+    - functionC
+
+classes:
+  restriction: exactly
+  scope: global
+  names:
+    - class test
+    - class Aclass
+
+functions:
+  restriction: exactly
+  scope: global
+  names:
+    - int functionA(int, int)
+    - template &lt;typename T&gt; int functionD(T)
+    - int * functionE(int, int)
+    - int ** functionF(int, int)
+    - int functionJ(int &amp;)
+    - int functionK(int *)
+
+private_functions:
+  restriction: exactly
+  scope: global
+  names:
+    - int test::functionG(int, int) const
+    - virtual void test::functionH()
+    - static int test::functionI(int, int)
+</code></pre>
+<h2 id="error-scenarios">Error Scenarios:</h2>
+<ul>
+<li>
+<p><strong> YAML file with syntax error: </strong> 
+For example if the yaml file contained "libary" instead of "library", restrictor will not check for libraries and return an answer as if the "library" criterion was empty.</p>
+</li>
+<li>
+<p><strong> YAML file with logical error: </strong>
+For example if the yaml file contained a keyword with "exactly" restriction and after that the same keyword with "forbidden" restriction, the last occurance in the file will be applied.</p>
+</li>
+</ul></div>
+        
+        
+    </div>
+
+    
+      <footer class="col-md-12 text-center">
+          
+          
+            <hr>
+            <p>
+            <small>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</small>
+            </p>
+          
+
+          
+          
+      </footer>
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="../js/bootstrap-3.0.3.min.js"></script>
+
+    
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.0/build/highlight.min.js"></script>
+        
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    <script>var base_url = ".."</script>
+    
+    <script src="../js/base.js"></script>
+    <script src="../search/main.js"></script>
+
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+    </body>
+
+</html>

@@ -1,0 +1,90 @@
+*errors:
+code doesnt compile
+file dne 
+
+*Isolate:
+function:
+- normal: python isolator.py isolateFunction testfiles\\test.cpp testfiles\\destination.cpp "int ss(int)" 
+- template: "template <typename T> T myMax1(T &, T)"
+- static: none 
+- const:  none
+
+member function of class\struct:
+- normal inside: int Animal:: sum(int)
+- normal outside: int Animal:: sum(int,int)
+- template inside: template <typename T> T A:: myMax2(T &, T)
+- template outside: "template <typename T> T A:: myMax(T &, T)"
+- static: "static void Animal::eat()"
+- const: virtual double Shape:: getArea() const = 0
+- virtual: virtual double Shape:: getArea() const = 0
+- pure virtual:virtual double Shape:: getArea() const = 0 
+- constructor: "MyClass :: MyClass()"
+- initiaizer list:"MyClass :: MyClass(int, double, char) : myInt()", "MyClass :: MyClass(int, double, int) : myInt()"
+- copy constructor: "MyClass :: MyClass(const MyClass&)"
+- destructor: "MyClass :: ~MyClass()"
+
+class\ struct:
+alone "class Animal",  "struct Node"
+with friend classes done
+with inherited classes  done
+"class Animal" -all false
+"class Animal" 
+"class Animal" -all true
+
+
+
+*errors:  
+member function but parent class wrong done
+const function while not const done
+virtuel function while not virtual done
+pure virtuel function while not pure virtua done
+static function while not static done
+member function class dne done
+function dne: "template <typename T> T myMax(T &, T)"
+
+*not supported:
+static parameters: int st(static int,int)
+
+*notes class { } not supported
+
+
+
+
+
+
+
+
+Microsoft Windows [Version 10.0.19045.2965]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\Rund> cd desktop
+
+C:\Users\Rund\Desktop>cd yad
+
+C:\Users\Rund\Desktop\Yad> python isolator.py isolateClass testfiles\\test.cpp testfiles\\destination.cpp "struct Node"
+
+C:\Users\Rund\Desktop\Yad> python isolator.py isolateFunction testfiles\\test.cpp testfiles\\destination.cpp "void print() const"
+Warning: Function doesn't exist in testfiles\\test.cpp file
+
+C:\Users\Rund\Desktop\Yad> python isolator.py isolateFunction testfiles\\test.cpp testfiles\\destination.cpp "void Animal:: print() const"
+
+C:\Users\Rund\Desktop\Yad> python isolator.py isolateFunction testfiles\\test.cpp testfiles\\destination.cpp "void Animal:: print()"
+Warning: Function doesn't exist in testfiles\\test.cpp file
+
+C:\Users\Rund\Desktop\Yad> python isolator.py isolateFunction testfiles\\test.cpp testfiles\\destination.cpp "int Animal:: sum(int)"
+
+C:\Users\Rund\Desktop\Yad> python isolator.py isolateFunction testfiles\\test.cpp testfiles\\destination.cpp "int Animal:: sum(int) const"
+Warning: Function doesn't exist in testfiles\\test.cpp file
+
+C:\Users\Rund\Desktop\Yad> python isolator.py isolateFunction testfiles\\test.cpp testfiles\\destination.cpp "virtual int Animal:: sum(int)"
+Warning: Function doesn't exist in testfiles\\test.cpp file
+
+C:\Users\Rund\Desktop\Yad> python isolator.py isolateFunction testfiles\\test.cpp testfiles\\destination.cpp "virtual int Animal:: sum(int) =0"
+Warning: Function doesn't exist in testfiles\\test.cpp file
+
+C:\Users\Rund\Desktop\Yad> python isolator.py isolateFunction testfiles\\test.cpp testfiles\\destination.cpp "void Animal:: eat()"
+Warning: Function doesn't exist in testfiles\\test.cpp file
+
+C:\Users\Rund\Desktop\Yad> python isolator.py isolateFunction testfiles\\test.cpp testfiles\\destination.cpp "static void Animal:: eat()"
+
+C:\Users\Rund\Desktop\Yad>

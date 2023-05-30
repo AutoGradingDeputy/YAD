@@ -1,0 +1,12 @@
+site_name: Yad Documentation
+site_url: https://yad.github.io
+nav:
+  - Home: index.md
+  - Isolator: isolator.md
+  - CommentController: commentController.md
+  - CheckAPI: checkAPI.md
+  - Restrictor: restrictor.md
+  - Reference: reference.md 
+theme:
+  name: null
+  custom_dir: 'cinderth\\cinder'

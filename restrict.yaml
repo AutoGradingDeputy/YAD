@@ -1,0 +1,65 @@
+# libraries:
+#   restriction: exactly
+#   scope: global
+#   names:
+#     - algorithm
+#     - iostream
+#     - test
+
+libraries:
+  restriction: at_least
+  scope: global
+  names:
+    - algorithm
+    - iostream
+
+keywords:
+  restriction: exactly
+  scope: int functionC(int, int)
+  names:
+    - functionC
+
+classes:
+  restriction: exactly
+  scope: global
+  names:
+    - class test
+    - class Aclass
+    - class Bclass
+    - class C1class
+    - class C2class
+    - class C3class
+    - class D1class
+    - class D2class
+    - class Eclass
+    - class Fclass
+    - class Gclass
+    - class I1class
+    - class I2class
+
+functions:
+  restriction: exactly
+  scope: global
+  names:
+    - int functionA(int, int)
+    - int functionB(int, int)
+    - int functionC(int, int)
+    - template <typename T> int functionD(T)
+    - int * functionE(int, int)
+    - int ** functionF(int, int)
+    - int functionJ(int &)
+    - int functionK(int *)
+
+# public_functions:
+#   restriction: forbidden
+#   scope: class testc
+#   names:
+#     - int testfunc(int)
+
+private_functions:
+  restriction: exactly
+  scope: global
+  names:
+    - int test::functionG(int, int) const
+    - virtual void test::functionH()
+    - static int test::functionI(int, int)
