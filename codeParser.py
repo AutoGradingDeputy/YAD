@@ -1,5 +1,6 @@
 import json
 import clang.cindex
+from clang.cindex import CursorKind
 import re
 from pathlib import Path
 
@@ -74,7 +75,11 @@ def findLocationFunction(data, prototype: str, source):
                 if is_static == item['is_static_method'] and is_virtual == item['is_virtual_method'] and is_pure == item['is_pure']:
                     end = item['end']
                     start = item['start']
-                    pos += [start, end, type, item['access_type']]
+                    if name == "main":
+                        pos += [start, end, "main", item['access_type']]
+                    else:
+                        pos += [start, end, type, item['access_type']]
+                    
     if type == "member_function":
         for item in data['nodes']:
             if item['kind'] == "CXX_METHOD" and item['spelling'].replace(" ", "") == name and item['prototype'].replace(" ", "") == qualtype and item['parent_class']!="" and parent_class == item['parent_class'].split(" ")[1]:
@@ -227,7 +232,7 @@ def prepareData (source: str):
 
     index = clang.cindex.Index.create()
     tu = index.parse('dud.cpp', unsaved_files=[('dud.cpp', source)])
-    
+        
     output = {"nodes": []}
     friendFlag = False
     classPointer = -1
@@ -235,6 +240,7 @@ def prepareData (source: str):
         access_type =""
         parent_class = ""
         initializer_list = "false"
+
         #Check if the constructor has an expression initializer list
         if node.kind == clang.cindex.CursorKind.CONSTRUCTOR:
             if hasInitializerList(node):
@@ -254,7 +260,7 @@ def prepareData (source: str):
             elif parent.kind == clang.cindex.CursorKind.STRUCT_DECL:
                 parent_class = "struct " + str(parent.spelling)
             
-        if node.kind == clang.cindex.CursorKind.CLASS_DECL:
+        if node.kind == clang.cindex.CursorKind.CLASS_DECL or node.kind == clang.cindex.CursorKind.STRUCT_DECL:
             classPointer = 0
             friendFlag = False
             
@@ -267,7 +273,7 @@ def prepareData (source: str):
 
         elif friendFlag:
             friend = node.spelling
-            if len(friend.split("class")) == 1: #check this: or len(friend.split("struct")):
+            if len(friend.split("class")) == 1 or len(friend.split("struct")) ==1:
                 friend = node.type.spelling.split('(')[0] + node.displayname
             output["nodes"][classPointer]["friend_with"].append(friend)
             friendFlag = False
