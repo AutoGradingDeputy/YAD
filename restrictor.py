@@ -368,7 +368,7 @@ def wordRestrict(source: str  = typer.Argument(..., help="The path of the .cpp o
     if restriction.lower() not in ["exactly", "forbidden", "at_least"]:
         print("Invalid Restriction Input")
         return False
-    
+
     #Check if global scope or not, if not then use scopeGetter to get everything in the scope defined by the user
     if scope.lower() == "global" or scope == "":
         with open(source, 'r') as f:
@@ -377,9 +377,11 @@ def wordRestrict(source: str  = typer.Argument(..., help="The path of the .cpp o
         source = scopeGetter(source, scope)
         if source == ["error"]:
             return False
-    
+
+    source = commentController.deleteForDeveloper(source)
+
     #Check if keyword exists and print true or false according to restriction
-    if re.search(fr"(?i).*return\s*[^\n;]+{re.escape(keyword)}.*", source):
+    if len(re.findall(fr"(?i).*return[\s\S]*{re.escape(keyword)}.*", source, flags=re.MULTILINE)) > 0:
         if restriction.lower() == "at_least" or restriction.lower() == "exactly":
             if not hide:
                 print("True")
