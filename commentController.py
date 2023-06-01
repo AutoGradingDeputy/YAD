@@ -168,5 +168,17 @@ def CommentOutFunction(
 
 
 
+#This function is responsible for removing all comments from a .cpp or .h file
+def deleteForDeveloper(source: str):
+    """
+    This tool will delete all the comments from a .cpp or .h file and return the source code.
+    """
+    # Remove all comments from the input file
+    source = re.sub(r'\/\/.*?$|\/\*[\s\S]*?\*\/', '', source, flags=re.MULTILINE)
+
+    return source
+
+
+
 if __name__ == "__main__":
     app()
