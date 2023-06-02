@@ -34,7 +34,6 @@ def findLocationFunction(data, prototype: str, source):
         type = "member_function"
     else:
         type="function"
-    
     #Extract information from function prototype
     if type == "member_function" or type == "template_member_function":
         parent_class = prototype.split("::")[0].strip().split(" ")[-1]
@@ -54,7 +53,7 @@ def findLocationFunction(data, prototype: str, source):
     if type == "constructor" or type == "decstructor":
         returntype = "void"
         params = "(" + prototype.split("::")[1].split("(")[1]
-        
+
     else:
         params = prototype.split(name)[1]
         
@@ -113,7 +112,7 @@ def findLocationFunction(data, prototype: str, source):
                     pos += [start, end, type, item['access_type']] 
     if type == "constructor":
         for item in data['nodes']:
-            if item['kind'] == "CONSTRUCTOR" and item['spelling'].replace(" ", "") == name and item['prototype'].replace(" ", "").split(")")[0]+")"  == qualtype:
+            if item['kind'] == "CONSTRUCTOR" and item['spelling'].replace(" ", "") == name and item['prototype'].replace(" ", "").split(")")[0]+")" == qualtype:
                 end = item['end']
                 start = item['start']
                 pos += [start, end, type, item['access_type']] 
@@ -157,7 +156,6 @@ def findLocationClass(data, prototype: str, source, type: str, iteration = 0):
                     class_end = end
                     pos+=[start, end, type, ""]
                     flag =1
-                
             if flag  == 0 : 
                 i = i+1
                 continue
@@ -169,13 +167,12 @@ def findLocationClass(data, prototype: str, source, type: str, iteration = 0):
                     mangledName= item['mangled_name'].split("@")
                     if len(mangledName) > 1 and mangledName[1] == name:
                         if item['kind'] == "CXX_METHOD":
-                            returnType = item['prototype'].split(" ")[0].strip()
+                            returnType = item['prototype'].split("(")[0].strip()
                             func_prototype = returnType +" " + name + "::" +item['displayname']
                             pos+= findLocationFunction(data, func_prototype, source)
                     if item['kind'] == "CONSTRUCTOR" or item['kind'] =="DESTRUCTOR":
                         returnType = "void"
                         func_prototype = name+"::" +item['displayname']
-                        print(func_prototype)
                         pos+= findLocationFunction(data, func_prototype, source)
             #check template member functions  
             if item["kind"] == "FUNCTION_TEMPLATE":
@@ -290,7 +287,7 @@ def prepareData (source: str):
     
     jsonFormat = json.dumps(output, indent=4)
     data = json.loads(jsonFormat)
-
+    
     return data
 
 

@@ -40,8 +40,11 @@ def isolateFunction(source: str  = typer.Argument(..., help="The source code tha
                 return 
         class_end = findClass[1]
         #fixing protoype
-        forward_implementation = prototype.split(parent_class)[0] + prototype.split(parent_class)[1]
-        forward_implementation = forward_implementation.split("::")[0] + forward_implementation.split("::")[1]
+        if findFunction[2] == "constructor" or findFunction[2] == "destructor":
+            forward_implementation = prototype.split("::")[1]
+        else:
+            forward_implementation = prototype.split(parent_class)[0] + prototype.split(parent_class)[1]
+            forward_implementation = forward_implementation.split("::")[0] + forward_implementation.split("::")[1]
     
     #commenting out the function in destination file
     commentController.CommentOutFunction(destination, prototype, 1, destination)
