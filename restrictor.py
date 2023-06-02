@@ -560,15 +560,28 @@ def accessRestrict(source: str  = typer.Argument(..., help="The path of the .cpp
         file.close()
         data = codeParser.prepareData("restrictorGen.cpp")
 
+    unsigned = ""
     #Variables used in the following if statement to find if function is private
+    if prototype.strip()[0:8] == "unsigned":
+        unsigned = "unsigned "
     if len(prototype.split("virtual")) == 1 and len(prototype.split("static")) == 1:
-        proto = prototype.split(' ')[0] + ' (' + prototype.split('(')[1].strip()
+        if unsigned == "":
+            proto = unsigned + prototype.split(' ')[0] + ' (' + prototype.split('(')[1].strip()
+        else:
+            proto = unsigned + prototype.split(' ')[1] + ' (' + prototype.split('(')[1].strip()
+        if len(proto.split("(")) > 2:
+            proto = "void ()"
     else:
-        proto = prototype.split(' ')[1] + ' (' + prototype.split('(')[1].strip()
+        if unsigned == "":
+            proto = unsigned + prototype.split(' ')[1] + ' (' + prototype.split('(')[1].strip()
+        else:
+            proto = unsigned + prototype.split(' ')[2] + ' (' + prototype.split('(')[1].strip()
+
+    unsigned = ""
     spelling = prototype.split('(')[0].split(' ')[-1].split('::')[-1]
     
     for decl in data['nodes']:
-        if decl['kind'] == "CXX_METHOD" and decl['spelling'] == spelling and decl['prototype'].replace(" ","") == proto.replace(" ","") and decl['access_type'] == type.lower():
+        if (decl['kind'] == "CXX_METHOD" or decl['kind'] == "CONSTRUCTOR" or decl['kind'] == "DESTRUCTOR") and decl['spelling'] == spelling and decl['prototype'].replace(" ","") == proto.replace(" ","") and decl['access_type'] == type.lower():
             return funcRestrict(source, restriction, prototype, scope, hide)
     if not hide:
         print("False")
