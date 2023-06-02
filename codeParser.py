@@ -9,11 +9,6 @@ def findLocationFunction(data, prototype: str, source):
     is_static = False
     is_pure = False
     is_virtual = False
-    has_initializer = "false"
-    
-    #Check constructors with initializer lists
-    if len(prototype.split("(")) > 2:
-        has_initializer = "true" 
 
     #Check static functions
     if len(prototype.split("static")) > 1:
@@ -59,8 +54,7 @@ def findLocationFunction(data, prototype: str, source):
     if type == "constructor" or type == "decstructor":
         returntype = "void"
         params = "(" + prototype.split("::")[1].split("(")[1]
-        if has_initializer == "true": 
-            params = params.split(":")[0]
+        
     else:
         params = prototype.split(name)[1]
         
@@ -119,7 +113,7 @@ def findLocationFunction(data, prototype: str, source):
                     pos += [start, end, type, item['access_type']] 
     if type == "constructor":
         for item in data['nodes']:
-            if item['kind'] == "CONSTRUCTOR" and item['spelling'].replace(" ", "") == name and item['prototype'].replace(" ", "").split(")")[0]+")"  == qualtype and item['initializer_list'] == has_initializer:
+            if item['kind'] == "CONSTRUCTOR" and item['spelling'].replace(" ", "") == name and item['prototype'].replace(" ", "").split(")")[0]+")"  == qualtype:
                 end = item['end']
                 start = item['start']
                 pos += [start, end, type, item['access_type']] 
@@ -214,17 +208,6 @@ def findLocationClass(data, prototype: str, source, type: str, iteration = 0):
             return pos
 
     return pos
- 
-
-
-#find if a constructor has expression initializer list
-def hasInitializerList(cursor):
-    for child in cursor.get_children():
-        if child.kind.is_expression():
-            return True
-    return False
-
-
 
 #Compile code and return parse tree
 def prepareData (source: str):
@@ -246,12 +229,6 @@ def prepareData (source: str):
     for node in tu.cursor.walk_preorder():
         access_type =""
         parent_class = ""
-        initializer_list = "false"
-
-        #Check if the constructor has an expression initializer list
-        if node.kind == clang.cindex.CursorKind.CONSTRUCTOR:
-            if hasInitializerList(node):
-                initializer_list = "true"
                 
         #Save access type of member functions, anything else will have value "invalid"              
         access_type = str(node.access_specifier).split(".")[1]
@@ -307,8 +284,7 @@ def prepareData (source: str):
             "inherits_from": [],
             "friend_with": [],
             "access_type" : access_type.lower(),
-            "parent_class" : parent_class,
-            "initializer_list" : initializer_list,
+            "parent_class" : parent_class
         }
         output["nodes"].append(node_dict)
     
