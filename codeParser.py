@@ -9,7 +9,6 @@ def findLocationFunction(data, prototype: str, source):
     is_static = False
     is_pure = False
     is_virtual = False
-
     #Check static functions
     if len(prototype.split("static")) > 1:
         is_static= True
@@ -38,6 +37,8 @@ def findLocationFunction(data, prototype: str, source):
     if type == "member_function" or type == "template_member_function":
         parent_class = prototype.split("::")[0].strip().split(" ")[-1]
         returntype = prototype.split(parent_class)[0]
+        if type == "template_member_function":
+            returntype = returntype.split(">")[1]
         prototype=prototype.replace(" ", "")
         name = prototype.split("::")[1].split("(")[0]
         if len(name.split("~")) > 1 and name.split("~")[1] == parent_class:
@@ -53,7 +54,6 @@ def findLocationFunction(data, prototype: str, source):
     if type == "constructor" or type == "decstructor":
         returntype = "void"
         params = "(" + prototype.split("::")[1].split("(")[1]
-
     else:
         params = prototype.split(name)[1]
         
@@ -287,7 +287,6 @@ def prepareData (source: str):
     
     jsonFormat = json.dumps(output, indent=4)
     data = json.loads(jsonFormat)
-    
     return data
 
 
