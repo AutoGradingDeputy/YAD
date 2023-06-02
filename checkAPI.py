@@ -11,7 +11,7 @@ def main(compare: str = typer.Argument(..., help="The path of the .cpp or .h fil
         output: str  = typer.Option("n", "-o", help="If n this will make checkAPI print the number of missing functions/classes then extra functions/classes, Input V if you want a list of violations to be printed and more information (default is n) (Takes only v or V or n or N)."),
         hide:bool = typer.Argument(False, hidden=True, help="A hidden variable for developers use, used to return extra functions and classes found in the code.")):
     """
-    This tool will compare two files together, the source and compare file, it will check if the function prototypes and class names match then return true or false accordingly.
+    Compares two files together, the source and compare file, it will check if the function prototypes and class names match then return true or false accordingly.
     """
     restrictor.checkAPI(source, restriction, compare, output, hide)
 

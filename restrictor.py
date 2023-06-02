@@ -58,7 +58,7 @@ def restrict(source: str  = typer.Argument(..., help="The path of the .cpp or .h
              hide: bool = typer.Argument(False, hidden=True, help="A hidden variable for developers use, used with checkAPI to show the names of the functions or classes that are violating the YAML file (extra)."),
              hide2: bool = typer.Argument(False, hidden=True, help="A hidden variable for developers use, used to show that checkAPI called restrict")):
     """
-    This tool will recieve a YAML file made by the user and restrict a .cpp or .h file according to that YAML file, it will return a list of findings (for YAML file explanation check GitHub).
+    Recieves a YAML file made by the user and restrict a .cpp or .h file according to that YAML file, it will return a list of findings (for YAML file explanation check GitHub).
     """
     #Used to control the style of output
     if output not in ["n", "N", "V", "v"]:
@@ -295,7 +295,7 @@ def libRestrict(source: str  = typer.Argument(..., help="The path of the .cpp or
                  lib: str = typer.Argument(..., help="The name of the library the user wants to check (only input the name of the library without #include)."),
                  hide:bool = typer.Argument(False, hidden=True, help="A hidden variable for developers use, used to return boolean")):
     """
-    This tool will check if a certain library inputted by the user follows as certain restriction type of (at_least/exactly/forbidden) in a .cpp or .h file also inputted by the user.
+    Checks if a certain library inputted by the user follows as certain restriction type of (at_least/exactly/forbidden) in a .cpp or .h file also inputted by the user.
     """
 
     #Makes sure that restriction inputted is a viable restriction
@@ -361,7 +361,7 @@ def wordRestrict(source: str  = typer.Argument(..., help="The path of the .cpp o
                  scope: str = typer.Argument(..., help="The scope the user wants to check inside (Function or Class, use their prototypes)."),
                  hide:bool = typer.Argument(False, hidden=True, help="A hidden variable for developers use, used to return boolean")):
     """
-    This tool will check if a certain keyword inputted by the user follows as certain restriction type of (at_least/exactly/forbidden) in a .cpp or .h file also inputted by the user.
+    Checks if a certain keyword inputted by the user follows as certain restriction type of (at_least/exactly/forbidden) in a .cpp or .h file also inputted by the user.
     """
 
     #Makes sure that restriction inputted is a viable restriction
@@ -415,7 +415,7 @@ def classRestrict(source: str  = typer.Argument(..., help="The path of the .cpp 
                  scope: str = typer.Argument(..., help="The scope the user wants to check inside (Function or Class, input their prototypes)."),
                  hide:bool = typer.Argument(False, hidden=True, help="A hidden variable for developers use, used to return boolean")):
     """
-    This tool will check if a certain class inputted by the user follows as certain restriction type of (at_least/exactly/forbidden) in a .cpp or .h file also inputted by the user.
+    Checks if a certain class inputted by the user follows as certain restriction type of (at_least/exactly/forbidden) in a .cpp or .h file also inputted by the user.
     """
 
     #Makes sure that restriction inputted is a viable restriction
@@ -478,7 +478,7 @@ def funcRestrict(source: str  = typer.Argument(..., help="The path of the .cpp o
                  scope: str = typer.Argument(..., help="The scope the user wants to check inside (Function or Class, input their prototypes)."),
                  hide:bool = typer.Argument(False, hidden=True, help="A hidden variable for developers use, used to return boolean")):
     """
-    This tool will check if a certain function inputted by the user follows as certain restriction type of (at_least/exactly/forbidden) in a .cpp or .h file also inputted by the user.
+    Checks if a certain function inputted by the user follows as certain restriction type of (at_least/exactly/forbidden) in a .cpp or .h file also inputted by the user.
     """
 
     #Makes sure that restriction inputted is a viable restriction
@@ -541,7 +541,7 @@ def accessRestrict(source: str  = typer.Argument(..., help="The path of the .cpp
                  type: str = typer.Argument(..., help="The access type the user wants to check for (private/public/protected)."),
                  hide:bool = typer.Argument(False, hidden=True, help="A hidden variable for developers use, used to return boolean")):
     """
-    This tool will check if a certain (private/public/protected) function inputted by the user follows as certain restriction type of (at_least/exactly/forbidden) in a .cpp or .h file also inputted by the user.
+    Checks if a certain (private/public/protected) function inputted by the user follows as certain restriction type of (at_least/exactly/forbidden) in a .cpp or .h file also inputted by the user.
     """
     #Makes sure that restriction inputted is a viable restriction
     if restriction.lower() not in ["exactly", "forbidden", "at_least"]:
@@ -583,7 +583,7 @@ def checkAPI(source: str  = typer.Argument(..., help="The path of the .cpp or .h
             output: str  = typer.Option("n", "-o", help="If n this will make checkAPI print the number of missing functions/classes then extra functions/classes, Input V if you want a list of violations to be printed and more information (default is n) (Takes only v or V or n or N)."),
             hide:bool = typer.Argument(False, hidden=True, help="A hidden variable for developers use, used to return extra functions and classes found in the code.")):
     """
-    This tool will compare two files together, the source and compare file, it will check if the function prototypes and class names match then return true or false accordingly.
+    Compares two files together, the source and compare file, it will check if the function prototypes and class names match then return true or false accordingly.
     """
     #Used to control the style of output
     if output not in ["n", "N", "V", "v"]:
@@ -648,6 +648,18 @@ def checkAPI(source: str  = typer.Argument(..., help="The path of the .cpp or .h
     if not hide:
         checkAPI(compare, restriction, source, output, True)
 
+
+
+@app.callback()
+def main():
+    """
+    Allows the user to restrict the use of certain criterion or many criteria in a source file.\n\nThe criteria are libraries, keywords, classes, functions and access type of functions.\n\n
+    The restriction follows one of three types being at_least, exactly and forbidden.\n\n
+    at_least: must exist, can be with others of the same criterion.\n\n
+    exactly: must only exist, can not be with others of the same criterion.\n\n
+    forbidden: must not exist.\n\n
+    For more information about each tool simply add the command you need followed by --help, for example:\n\n restrict r --help
+    """
 
 
 if __name__ == "__main__":
