@@ -43,7 +43,7 @@ def commentMaker(source: str, type: str, name: str, isolate =0, option=0, output
 def deleteComments(source: str  = typer.Argument(..., help="The path of the .cpp or .h file the user wants delete comments to work on."),
                     output: str  = typer.Option("", "-o", help="The path of the .cpp or .h file the user wants the output to be saved in (Default is printing on the terminal).")):
     """
-    This tool will delete all the comments from a .cpp or .h file and output the source code into the file of your choosing.
+    Deletes all the comments from a .cpp or .h file and output the source code into the file of your choosing.
     """
     with open(source, 'r') as f:
         source = f.read()
@@ -65,7 +65,7 @@ def deleteComments(source: str  = typer.Argument(..., help="The path of the .cpp
 def extractComments(source: str  = typer.Argument(..., help="The path of the .cpp or .h file the user wants extracts comments to work on."),
                     output: str  = typer.Option("", "-o", help="The path of the .cpp or .h file the user wants the output to be saved in (Default is printing on the terminal).")):
     """
-    This tool will extract all the comments from a C++ file and output the comments into the file of your choosing.
+    Extracts all the comments from a C++ file and output the comments into the file of your choosing.
     """
     with open(source, 'r') as f:
         source = f.read()
@@ -94,7 +94,7 @@ def extractComments(source: str  = typer.Argument(..., help="The path of the .cp
 def extractHeader(input: str  = typer.Argument(..., help="The path of the .cpp or .h file the user wants extracts header comments to work on."),
                    output: str  = typer.Option("", "-o", help="The path of the .cpp or .h file the user wants the output to be saved in (Default is printing on the terminal).")):
     """
-    This tool will extract all header comments from a C++ file and output the comments into the file of your choosing.
+    Extracts all header comments from a C++ file and output the comments into the file of your choosing.
     """
     with open(input, 'r') as f:
         source = f.read()
@@ -139,7 +139,7 @@ def CommentOutClass(
     isolate: int = typer.Argument(0, hidden=True, help="A hidden variable for developers' use, used to show that function was called by isolator."),
     output: str  = typer.Option("", "-o", help="The path of the .cpp or .h file the user wants the output to be saved in (Default is printing on the terminal).")):
     """
-    This tool will comment out a class implementation from a C++ file using a class prototype (equivalent to deleting the class).
+    Comments out a class implementation from a C++ file using a class prototype (equivalent to deleting the class).
     """
     if all.lower() not in ["f","t", "c"]:
         print("Invalid input for -all")
@@ -164,7 +164,7 @@ def CommentOutFunction(
     isolate: int = typer.Argument(0, hidden=True, help="A hidden variable for developers' use, used to show that function was called by isolator."),
     output: str  = typer.Option("", "-o", help="The path of the .cpp or .h file the user wants the output to be saved in (Default is printing on the terminal).")):
     """
-    This tool will comment out a function implementation from a C++ file using a function prototype (equivalent to deleting the function).
+    Comments out a function implementation from a C++ file using a function prototype (equivalent to deleting the function).
     """
     commentMaker(source, "function" , prototype, isolate, 0, output)
 
@@ -173,12 +173,21 @@ def CommentOutFunction(
 #This function is responsible for removing all comments from a .cpp or .h file
 def deleteForDeveloper(source: str):
     """
-    This tool will delete all the comments from a .cpp or .h file and return the source code.
+    Deletes all the comments from a .cpp or .h file and return the source code.
     """
     # Remove all comments from the input file
     source = re.sub(r'\/\/.*?$|\/\*[\s\S]*?\*\/', '', source, flags=re.MULTILINE)
 
     return source
+
+
+
+@app.callback()
+def main():
+    """
+    Allows the user to control comments by extracting or removing comments, or by commenting out certain classes or functions.
+    For more information about each tool simply add the command you need followed by --help, for example:\n\n commentCtrl f --help
+    """
 
 
 

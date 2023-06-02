@@ -11,7 +11,7 @@ def isolateFunction(source: str  = typer.Argument(..., help="The source code tha
                     destination: str  = typer.Argument(..., help="The destination code where the function will be embedded or replaced (.cpp/.h)"),
                     prototype: str  = typer.Argument(..., help="The function prototype: return-type function-name parameters-types. In the case of member functions return-type class-name::function-name parameters-types. Example: int test(int, string). Must put them in quotations when using CLI.")):
     """
-    This tool will isolate out a function, the function will be taken from source and replace the one in destination or add one.
+    Isolates out a function, the function will be taken from source and replace the one in destination or add one.
     """
     
     findFunction = codeParser.positions(source,"function", prototype)
@@ -86,7 +86,7 @@ def isolateClass(
     prototype: str  = typer.Argument(..., help="The class prototype: class class-name. Example: class test. Must put them in quotations when using CLI."),
     all: str  = typer.Option("f", "-all", help="If t this will isolate the class with all its children classes, if c this will isolate the class itself without any member function implemented outside the class,if f this will isolate the class with its member functions implemented outside the class. Takes c, t, or f. Default value is f.")):
     """
-    This tool will isolate out a class, the class will be taken from source and replace the one in destination or add one.
+    Isolates out a class, the class will be taken from source and replace the one in destination or add one.
     """
     if all.lower() not in ["f","t", "c"]:
         print("Invalid input for -all")
@@ -144,7 +144,15 @@ def isolateClass(
     # Write the modified lines to the destination file
     with open(destination, "w") as destination_file:
         destination_file.writelines(lines)
-    
+
+
+
+@app.callback()
+def main():
+    """
+    Allows the user to copy a given function or class from the source code file into the destination code file and replaces. It consists of two parts, IsolateFunction and IsolateClass.\n\n
+    For more information about each tool simply add the command you need followed by --help, for example:\n\n isolate f --help
+    """
 
 
 
