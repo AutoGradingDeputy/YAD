@@ -135,20 +135,22 @@ def extractHeader(input: str  = typer.Argument(..., help="The path of the .cpp o
 def CommentOutClass(
     source: str  = typer.Argument(..., help="The path of the .cpp or .h file the user wants comment out class to work on."),
     prototype: str  = typer.Argument(..., help="The class the user wants to check (Must input like this: \"class name\")."),
-    all: str  = typer.Option("true", "-all", help="If true this will isolate the class with all its children classes"),
+    all: str  = typer.Option("f", "-all", help="If t this will comment out the class with all its children classes, if c this will comment out the class itself without any member function implemented outside the class,if f this will comment out the class with its member functions implemented outside the class. Takes c, t, or f. Default value is f."),
     isolate: int = typer.Argument(0, hidden=True, help="A hidden variable for developers' use, used to show that function was called by isolator."),
     output: str  = typer.Option("", "-o", help="The path of the .cpp or .h file the user wants the output to be saved in (Default is printing on the terminal).")):
     """
     This tool will comment out a class implementation from a C++ file using a class prototype (equivalent to deleting the class).
     """
-    if all.lower() not in ["true","false"]:
+    if all.lower() not in ["f","t", "c"]:
         print("Invalid input for -all")
         return False
     
     type = prototype.split(" ")[0]
     option = 1
-    if all.lower() == "true":
+    if all == "t":
         option = 0
+    elif all == "c":
+        option = -1
 
     commentMaker(source, type , prototype, isolate, option, output)
 

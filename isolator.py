@@ -84,13 +84,19 @@ def isolateClass(
     source: str  = typer.Argument(..., help="The source code that the function will be isolated from (.cpp/.h)"), 
     destination: str  = typer.Argument(..., help="The destination code where the function will be embedded or replaced (.cpp/.h)"), 
     prototype: str  = typer.Argument(..., help="The class prototype: class class-name. Example: class test. Must put them in quotations when using CLI."),
-    all: str  = typer.Option("false", "-all", help="If true this will isolate the class with all its children classes, only takes true or false, default value is false.")):
+    all: str  = typer.Option("f", "-all", help="If t this will isolate the class with all its children classes, if c this will isolate the class itself without any member function implemented outside the class,if f this will isolate the class with its member functions implemented outside the class. Takes c, t, or f. Default value is f.")):
     """
     This tool will isolate out a class, the class will be taken from source and replace the one in destination or add one.
     """
-    option =0
-    if all.lower() == "false":
-        option = 1
+    if all.lower() not in ["f","t", "c"]:
+        print("Invalid input for -all")
+        return False
+    
+    option =1
+    if all == "t":
+        option = 0
+    elif all == "c":
+        option = -1
     type = prototype.split(" ")[0]
     position = codeParser.positions(source, type, prototype, option)
     
