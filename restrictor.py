@@ -380,8 +380,13 @@ def wordRestrict(source: str  = typer.Argument(..., help="The path of the .cpp o
 
     source = commentController.deleteForDeveloper(source)
 
+    iter = 0
+    if keyword.lower() == "iteration":
+        iter += len(re.findall(fr"(?i){{[\s\S]*for[\s\S]*}}", source, flags=re.MULTILINE))
+        iter += len(re.findall(fr"(?i){{[\s\S]*while[\s\S]*}}", source, flags=re.MULTILINE))
+        
     #Check if keyword exists and print true or false according to restriction
-    if len(re.findall(fr"(?i).*return[\s\S]*{re.escape(keyword)}.*", source, flags=re.MULTILINE)) > 0:
+    if len(re.findall(fr"(?i){{[\s\S]*{re.escape(keyword)}[\s\S]*}}", source, flags=re.MULTILINE)) > 0 or iter > 0:
         if restriction.lower() == "at_least" or restriction.lower() == "exactly":
             if not hide:
                 print("True")
