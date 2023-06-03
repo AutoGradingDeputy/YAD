@@ -475,7 +475,7 @@ def classRestrict(source: str  = typer.Argument(..., help="The path of the .cpp 
 def funcRestrict(source: str  = typer.Argument(..., help="The path of the .cpp or .h file the user wants restrictor to work on."),
                  restriction: str = typer.Argument(..., help="The restriction type used for 3 ways of checking:\n\nat_least: The function being checked must exist (It can be with other functions).\n\nexactly: The function being checked must only exist (It can not be with other functions).\n\nforbidden: The function being checked must not exist."),
                  prototype: str = typer.Argument(..., help="The function the user wants to check (Must input like this: \"int functionName(int, int)\"."),
-                 scope: str = typer.Argument(..., help="The scope the user wants to check inside (Function or Class, input their prototypes)."),
+                 scope: str = typer.Argument(..., help="The scope the user wants to check inside (Function or Class, input their prototypes, if class then no need to add class name to prototype)."),
                  hide:bool = typer.Argument(False, hidden=True, help="A hidden variable for developers use, used to return boolean")):
     """
     Checks if a certain function inputted by the user follows as certain restriction type of (at_least/exactly/forbidden) in a .cpp or .h file also inputted by the user.
@@ -540,7 +540,7 @@ def funcRestrict(source: str  = typer.Argument(..., help="The path of the .cpp o
 def accessRestrict(source: str  = typer.Argument(..., help="The path of the .cpp or .h file the user wants restrictor to work on."),
                  restriction: str = typer.Argument(..., help="The restriction type used for 3 ways of checking:\n\nat_least: The function being checked must exist (It can be with other functions).\n\nexactly: The function being checked must only exist (It can not be with other functions).\n\nforbidden: The function being checked must not exist."),
                  prototype: str = typer.Argument(..., help="The function the user wants to check (Must input like this: \"int functionName(int, int)\" or \"int functionName(int x,int y)\")."),
-                 scope: str = typer.Argument(..., help="The scope the user wants to check inside (Function or Class, input their prototypes)."),
+                 scope: str = typer.Argument(..., help="The scope the user wants to check inside (Function or Class, input their prototypes, if class then no need to add class name to prototype)."),
                  type: str = typer.Argument(..., help="The access type the user wants to check for (private/public/protected)."),
                  hide:bool = typer.Argument(False, hidden=True, help="A hidden variable for developers use, used to return boolean")):
     """
