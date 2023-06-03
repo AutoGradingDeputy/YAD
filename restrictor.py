@@ -507,7 +507,8 @@ def funcRestrict(source: str  = typer.Argument(..., help="The path of the .cpp o
     #Check if function exists and print true or false according to restriction
     if codeParser.findLocationFunction(data, prototype, source) != empty:
         if restriction.lower() == "exactly":
-            if len(re.findall(r"\b[a-zA-Z_][a-zA-Z0-9_]*\s+[a-zA-Z_][a-zA-Z0-9_]*\s*\([^)]*\)\s*\{[^{}]*\}", scopeG, flags=re.MULTILINE)) > 1:
+            # if len(re.findall(r"\b[a-zA-Z_][a-zA-Z0-9_]*\s+[a-zA-Z_][a-zA-Z0-9_]*\s*\([^)]*\)\s*\{[^{}]*\}", scopeG, flags=re.MULTILINE)) > 1:
+            if len(re.findall(r"\b(?:\w+\s+)+\*?\s*\w+\s*\([^)]*\)\s*(?:const\s*)?(?:=\s*0)?(?=\s*\{)", scopeG, flags=re.MULTILINE)) > 1:
                 if not hide:
                     print("False")
                 return False
