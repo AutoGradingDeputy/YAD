@@ -638,12 +638,22 @@ def checkAPI(source: str  = typer.Argument(..., help="The path of the .cpp or .h
     virtual = ""
     const = ""
     unsigned = ""
+    pure = ""
+    static = ""
     for decl in data['nodes']:
         if decl['prototype'].split(' ')[0] == "unsigned":
             unsigned = " " + decl['prototype'].split(' ')[1]
         else:
             unsigned = ""
         if decl['kind'] == "CXX_METHOD":
+            if decl['is_pure'] == True:
+                pure = "=0"
+            else:
+                pure = ""
+            if decl['is_static_method'] == True:
+                static = "static "
+            else:
+                static = ""
             if decl['is_virtual_method'] == True:
                 virtual = "virtual "
             else:
@@ -655,11 +665,11 @@ def checkAPI(source: str  = typer.Argument(..., help="The path of the .cpp or .h
             if decl['access_type'] == "":
                 allFunctions.append(decl['prototype'].split(' ')[0] + unsigned + " " + decl['displayname'] + const)
             elif decl['access_type'] == 'private':
-                allPrivFunctions.append(virtual + decl['prototype'].split(' ')[0] + unsigned + " " + decl['parent_class'].split(' ')[1] + "::" + decl['displayname'] + const)
+                allPrivFunctions.append(virtual + static + decl['prototype'].split(' ')[0] + unsigned + " " + decl['parent_class'].split(' ')[1] + "::" + decl['displayname'] + pure + const)
             elif decl['access_type'] == 'public':
-                allPublicFunctions.append(virtual + decl['prototype'].split(' ')[0] + unsigned + " " + decl['parent_class'].split(' ')[1] + "::" + decl['displayname'] + const)
+                allPublicFunctions.append(virtual + static + decl['prototype'].split(' ')[0] + unsigned + " " + decl['parent_class'].split(' ')[1] + "::" + decl['displayname'] + pure + const)
             elif decl['access_type'] == 'protected':
-                allProtectedFunctions.append(virtual + decl['prototype'].split(' ')[0] + unsigned + " " + decl['parent_class'].split(' ')[1] + "::" + decl['displayname'] + const )
+                allProtectedFunctions.append(virtual + static + decl['prototype'].split(' ')[0] + unsigned + " " + decl['parent_class'].split(' ')[1] + "::" + decl['displayname'] + pure + const )
         elif decl['kind'] == "FUNCTION_DECL":
             if len(decl['prototype'].split('(')[0].split('**')) == 1 and len(decl['prototype'].split('(')[0].split('*')) == 1:
                 allFunctions.append(decl['prototype'].split(' ')[0] + unsigned + " " + decl['displayname'] + const)
