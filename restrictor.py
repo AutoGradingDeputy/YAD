@@ -492,6 +492,9 @@ def funcRestrict(source: str  = typer.Argument(..., help="The path of the .cpp o
         with open(source, 'r') as f:
             scopeG = f.read()
     else:
+        if len(scope.split("class ")) > 1:
+            fname = prototype.split("(")[0].split(" ")[-1].strip()
+            prototype = prototype.split(fname)[0] + scope.split("class ")[-1].strip() + "::" + fname + "(" + prototype.split("(")[-1]
         scopeG = scopeGetter(source, scope)
         if scopeG == ["error"]:
             return False
@@ -561,23 +564,39 @@ def accessRestrict(source: str  = typer.Argument(..., help="The path of the .cpp
         data = codeParser.prepareData("restrictorGen.cpp")
 
     unsigned = ""
+    longlong = ""
     #Variables used in the following if statement to find if function is private
     if prototype.strip()[0:8] == "unsigned":
         unsigned = "unsigned "
+    if len(prototype.split("long long")) > 1:
+        longlong = "long "
     if len(prototype.split("virtual")) == 1 and len(prototype.split("static")) == 1:
         if unsigned == "":
-            proto = unsigned + prototype.split(' ')[0] + ' (' + prototype.split('(')[1].strip()
+            if longlong == "":
+                proto = unsigned + longlong + prototype.split(' ')[0] + ' (' + prototype.split('(')[1].strip()
+            else:
+                proto = unsigned + longlong + prototype.split(' ')[1] + ' (' + prototype.split('(')[1].strip()
         else:
-            proto = unsigned + prototype.split(' ')[1] + ' (' + prototype.split('(')[1].strip()
+            if longlong == "":
+                proto = unsigned + longlong + prototype.split(' ')[1] + ' (' + prototype.split('(')[1].strip()
+            else:
+                proto = unsigned + longlong + prototype.split(' ')[2] + ' (' + prototype.split('(')[1].strip()
         if len(proto.split("(")) > 2:
             proto = "void ()"
     else:
         if unsigned == "":
-            proto = unsigned + prototype.split(' ')[1] + ' (' + prototype.split('(')[1].strip()
+            if longlong == "":
+                proto = unsigned + longlong + prototype.split(' ')[1] + ' (' + prototype.split('(')[1].strip()
+            else:
+                proto = unsigned + longlong + prototype.split(' ')[2] + ' (' + prototype.split('(')[1].strip()
         else:
-            proto = unsigned + prototype.split(' ')[2] + ' (' + prototype.split('(')[1].strip()
+            if longlong == "":
+                proto = unsigned + longlong + prototype.split(' ')[2] + ' (' + prototype.split('(')[1].strip()
+            else:
+                proto = unsigned + longlong + prototype.split(' ')[3] + ' (' + prototype.split('(')[1].strip()
 
     unsigned = ""
+    longlong = ""
     spelling = prototype.split('(')[0].split(' ')[-1].split('::')[-1]
     
     for decl in data['nodes']:
