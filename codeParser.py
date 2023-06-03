@@ -12,6 +12,7 @@ def findLocationFunction(data, prototype: str, source):
     #Check static functions
     if len(prototype.split("static")) > 1:
         is_static= True
+        prototype = prototype.split("static")[1]
 
     #Check virtual and pure virtual functions
     if len(prototype.split("virtual")) > 1:
@@ -22,6 +23,7 @@ def findLocationFunction(data, prototype: str, source):
         elif len( prototype.split("= 0")) > 1:
             prototype = prototype.split("= 0")[0]
             is_pure= True
+        prototype= prototype.split("virtual")[1]
             
     #Label function by its type 
     if len(prototype.split("template"))> 1 :
