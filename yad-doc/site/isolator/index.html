@@ -162,10 +162,20 @@ It consists of two parts, IsolateFunction and IsolateClass.</p>
 <p><code>isolate f source.cpp destination.cpp "function prototype"</code> </p>
 <h3 id="isolate-class">Isolate Class</h3>
 <p><code>isolate c source.cpp destination.cpp "class  class-name"</code></p>
-<p>By default, it only isolates the class with its member functions. Adding the option '-all' also isolates all its dependent classes:</p>
-<p><code>isolate c source.cpp destination.cpp "class  class-name" -all True</code></p>
+<p>By default, it only isolates the class with its member functions' implementation. Adding the option '-all' gives more options: </p>
+<ul>
+<li>
+<p>Isolates the class with all its dependent classes (inherited classes and friend classes). 
+<code>isolate c source.cpp destination.cpp "class  class-name" -all t</code></p>
+</li>
+<li>
+<p>Isolates the class definition only.
+<code>isolate c source.cpp destination.cpp "class  class-name" -all c</code></p>
+</li>
+</ul>
 <h2 id="how-does-it-work">How does it work?</h2>
-<p>First of all the desired function\class must have the same signature in both source and destination files, then Isolator will search for the desired function\class inside source.cpp and take a copy of it, after that it will search for the desired function\class inside destination.cpp.</p>
+<p>Isolator will search for the desired function\class inside source.cpp and take a copy of it, after that it will search for the desired function\class inside destination.cpp and inserts it in the appropriate place as described below.
+Searching for a function or class depends on signature matching. </p>
 <h2 id="where-it-will-be-inserted">Where it will be inserted?</h2>
 <h3 id="isolate-fucntion"><strong> Isolate fucntion: </strong></h3>
 <p><strong> Non-member function: </strong></p>
@@ -187,6 +197,7 @@ It consists of two parts, IsolateFunction and IsolateClass.</p>
 <p><strong> Class not found in destination.cpp: </strong></p>
 <p>The copied class from source.cpp will be pasted at the end of detination.cpp </p>
 <h2 id="error-scenarios">Error Scenarios:</h2>
+<p><strong> The following cases outputs an error message </strong></p>
 <h3 id="isolate-function_1">Isolate Function:</h3>
 <p><strong> Non-member Functions: </strong> </p>
 <ul>
@@ -212,14 +223,19 @@ It consists of two parts, IsolateFunction and IsolateClass.</p>
 </ul>
 <div class="bs-callout bs-callout-info">
     <h4> Note </h4>
+    While isolating a member function, writing the class on one lines results with errors.
+    Please write the class on at least 2 lines.
     Write the class on 2 lines or more inside your .cpp file
     <div class="bs-callout bs-callout-danger">
         <code>
+        <strong> DON'T: </strong> </br>
         class x{}
         </code>
     </div>
     <div class="bs-callout bs-callout-success">
-        <code> class x{ 
+        <code style="color:green;"> 
+        <strong > DO: </strong> </br>
+        class x{ 
         </br> }
         </code>
     </div>

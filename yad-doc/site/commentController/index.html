@@ -168,8 +168,17 @@
 <h3 id="comment-out-class">Comment Out Class:</h3>
 <p>This tool will comment out a Class implementation from a C++ file and output the new code.</p>
 <p><code>commentCtrl c source.cpp "class class-name"</code></p>
-<p>By default, it only comments out the class with its member functions. Adding the option '-all' comments out the all its dependent classes:</p>
-<p><code>commentCtrl c source.cpp "class class-name" -all True</code></p>
+<p>By default, it only comments the class with its member functions' implementation. Adding the option '-all' gives more options: </p>
+<ul>
+<li>
+<p>Comments the class with all its dependent classes (inherited classes and friend classes). 
+<code>commentCtrl c source.cpp "class  class-name" -all t</code></p>
+</li>
+<li>
+<p>Comments the class definition only.
+<code>commentCtrl c source.cpp "class  class-name" -all c</code></p>
+</li>
+</ul>
 <h2 id="output-options">Output options</h2>
 <p><strong> -o </strong> followed by the path of the file you want the output to be saved in (The default is printing the output on the terminal).</p>
 <h3 id="example-command-with-option">Example command with option:</h3>

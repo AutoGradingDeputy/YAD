@@ -1,4 +1,4 @@
-# References
+# Reference
 Below are examples of how to write the function's parameter
 
 <strong> Non-member Functions: </strong> 
