@@ -567,35 +567,48 @@ def accessRestrict(source: str  = typer.Argument(..., help="The path of the .cpp
 
     unsigned = ""
     longlong = ""
+    point = ""
     #Variables used in the following if statement to find if function is private
     if prototype.strip()[0:8] == "unsigned":
         unsigned = "unsigned "
     if len(prototype.split("long long")) > 1:
         longlong = "long "
     if len(prototype.split("virtual")) == 1 and len(prototype.split("static")) == 1:
+        if len(prototype.split("(")[0].split("**")) > 1:
+            point = " **"
+        elif len(prototype.split("(")[0].split("*")) > 1:
+            point = " *"
+        else:
+            point = ""
         if unsigned == "":
             if longlong == "":
-                proto = unsigned + longlong + prototype.split(' ')[0] + ' (' + prototype.split('(')[1].strip().split("=0")[0].strip()
+                proto = unsigned + longlong + prototype.split(' ')[0] + point + ' (' + prototype.split('(')[1].strip().split("=0")[0].strip()
             else:
-                proto = unsigned + longlong + prototype.split(' ')[1] + ' (' + prototype.split('(')[1].strip().split("=0")[0].strip()
+                proto = unsigned + longlong + prototype.split(' ')[1] + point + ' (' + prototype.split('(')[1].strip().split("=0")[0].strip()
         else:
             if longlong == "":
-                proto = unsigned + longlong + prototype.split(' ')[1] + ' (' + prototype.split('(')[1].strip().split("=0")[0].strip()
+                proto = unsigned + longlong + prototype.split(' ')[1] + point + ' (' + prototype.split('(')[1].strip().split("=0")[0].strip()
             else:
-                proto = unsigned + longlong + prototype.split(' ')[2] + ' (' + prototype.split('(')[1].strip().split("=0")[0].strip()
+                proto = unsigned + longlong + prototype.split(' ')[2] + point + ' (' + prototype.split('(')[1].strip().split("=0")[0].strip()
         if len(proto.split("(")) > 2:
             proto = "void ()"
     else:
+        if len(prototype.split("(")[0].split("**")) > 1:
+            point = " **"
+        elif len(prototype.split("(")[0].split("*")) > 1:
+            point = " *"
+        else:
+            point = ""
         if unsigned == "":
             if longlong == "":
-                proto = unsigned + longlong + prototype.split(' ')[1] + ' (' + prototype.split('(')[1].strip().split("=0")[0].strip()
+                proto = unsigned + longlong + prototype.split(' ')[1] + point + ' (' + prototype.split('(')[1].strip().split("=0")[0].strip()
             else:
-                proto = unsigned + longlong + prototype.split(' ')[2] + ' (' + prototype.split('(')[1].strip().split("=0")[0].strip()
+                proto = unsigned + longlong + prototype.split(' ')[2] + point + ' (' + prototype.split('(')[1].strip().split("=0")[0].strip()
         else:
             if longlong == "":
-                proto = unsigned + longlong + prototype.split(' ')[2] + ' (' + prototype.split('(')[1].strip().split("=0")[0].strip()
+                proto = unsigned + longlong + prototype.split(' ')[2] + point+ ' (' + prototype.split('(')[1].strip().split("=0")[0].strip()
             else:
-                proto = unsigned + longlong + prototype.split(' ')[3] + ' (' + prototype.split('(')[1].strip().split("=0")[0].strip()
+                proto = unsigned + longlong + prototype.split(' ')[3] + point + ' (' + prototype.split('(')[1].strip().split("=0")[0].strip()
 
     unsigned = ""
     longlong = ""
@@ -623,7 +636,7 @@ def checkAPI(source: str  = typer.Argument(..., help="The path of the .cpp or .h
     if output not in ["n", "N", "V", "v"]:
         print("Invalid -o input")
         return False
-
+    
     data = codeParser.prepareData(compare)
 
     #Makes sure that restriction inputted is a viable restriction
@@ -642,6 +655,7 @@ def checkAPI(source: str  = typer.Argument(..., help="The path of the .cpp or .h
     unsigned = ""
     pure = ""
     static = ""
+    point = " "
     for decl in data['nodes']:
         if decl['prototype'].split(' ')[0] == "unsigned":
             unsigned = " " + decl['prototype'].split(' ')[1]
@@ -664,14 +678,20 @@ def checkAPI(source: str  = typer.Argument(..., help="The path of the .cpp or .h
                 const = " const"
             else:
                 const = ""
+            if len(decl['prototype'].split("(")[0].split('**')) > 1:
+                point = " ** "
+            elif len(decl['prototype'].split("(")[0].split('*')) > 1:
+                point = " * "
+            else:
+                point = " "
             if decl['access_type'] == "":
-                allFunctions.append(decl['prototype'].split(' ')[0] + unsigned + " " + decl['displayname'] + const + pure)
+                allFunctions.append(decl['prototype'].split(' ')[0] + unsigned + point + decl['displayname'] + const + pure)
             elif decl['access_type'] == 'private':
-                allPrivFunctions.append(virtual + static + decl['prototype'].split(' ')[0] + unsigned + " " + decl['parent_class'].split(' ')[1] + "::" + decl['displayname'] + const + pure)
+                allPrivFunctions.append(virtual + static + decl['prototype'].split(' ')[0] + unsigned + point + decl['parent_class'].split(' ')[1] + "::" + decl['displayname'] + const + pure)
             elif decl['access_type'] == 'public':
-                allPublicFunctions.append(virtual + static + decl['prototype'].split(' ')[0] + unsigned + " " + decl['parent_class'].split(' ')[1] + "::" + decl['displayname'] + const + pure)
+                allPublicFunctions.append(virtual + static + decl['prototype'].split(' ')[0] + unsigned + point + decl['parent_class'].split(' ')[1] + "::" + decl['displayname'] + const + pure)
             elif decl['access_type'] == 'protected':
-                allProtectedFunctions.append(virtual + static + decl['prototype'].split(' ')[0] + unsigned + " " + decl['parent_class'].split(' ')[1] + "::" + decl['displayname'] + const + pure)
+                allProtectedFunctions.append(virtual + static + decl['prototype'].split(' ')[0] + unsigned + point + decl['parent_class'].split(' ')[1] + "::" + decl['displayname'] + const + pure)
         elif decl['kind'] == "FUNCTION_DECL":
             if len(decl['prototype'].split('(')[0].split('**')) == 1 and len(decl['prototype'].split('(')[0].split('*')) == 1:
                 allFunctions.append(decl['prototype'].split(' ')[0] + unsigned + " " + decl['displayname'] + const + pure)
