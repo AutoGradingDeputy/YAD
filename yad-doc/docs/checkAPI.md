@@ -7,9 +7,9 @@ CheckAPI is dependent on Restrictor.
 
 ## Commands:
 
-`CheckAPI source.cpp compare.cpp exactly` -Checks if both files have the same functions and classes
+`CheckAPI compare.cpp source.cpp exactly` -Checks if both files have the same functions and classes
 
-`CheckAPI source.cpp compare.cpp at_least` -Checks if source.cpp have at least all the functions and classes that are in compare.cpp
+`CheckAPI compare.cpp source.cpp at_least` -Checks if source.cpp have at least all the functions and classes that are in compare.cpp
 
 
 ## Output options
@@ -20,4 +20,4 @@ CheckAPI is dependent on Restrictor.
 <strong>v</strong>: verbose, list of violations with a minor explanation.
 
 ### Example command with option:
-`CheckAPI source.cpp compare.cpp exactly -o v`
+`CheckAPI compare.cpp source.cpp exactly -o v`
