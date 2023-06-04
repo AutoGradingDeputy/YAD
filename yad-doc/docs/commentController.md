@@ -29,9 +29,13 @@ This tool will comment out a Class implementation from a C++ file and output the
 
 `commentCtrl c source.cpp "class class-name"`
 
-By default, it only comments out the class with its member functions. Adding the option '-all' comments out the all its dependent classes:
+By default, it only comments the class with its member functions' implementation. Adding the option '-all' gives more options: 
 
-`commentCtrl c source.cpp "class class-name" -all True`
+- Comments the class with all its dependent classes (inherited classes and friend classes). 
+`commentCtrl c source.cpp "class  class-name" -all t`
+
+- Comments the class definition only.
+`commentCtrl c source.cpp "class  class-name" -all c`
 
 ## Output options
 <strong> -o </strong> followed by the path of the file you want the output to be saved in (The default is printing the output on the terminal).

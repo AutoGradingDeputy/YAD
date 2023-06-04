@@ -10,12 +10,17 @@ It consists of two parts, IsolateFunction and IsolateClass.
 ### Isolate Class 
 ` isolate c source.cpp destination.cpp "class  class-name" `
 
-By default, it only isolates the class with its member functions. Adding the option '-all' also isolates all its dependent classes:
+By default, it only isolates the class with its member functions' implementation. Adding the option '-all' gives more options: 
 
-` isolate c source.cpp destination.cpp "class  class-name" -all True`
+- Isolates the class with all its dependent classes (inherited classes and friend classes). 
+`isolate c source.cpp destination.cpp "class  class-name" -all t`
+
+- Isolates the class definition only.
+`isolate c source.cpp destination.cpp "class  class-name" -all c`
 
 ## How does it work?
-First of all the desired function\class must have the same signature in both source and destination files, then Isolator will search for the desired function\class inside source.cpp and take a copy of it, after that it will search for the desired function\class inside destination.cpp.
+Isolator will search for the desired function\class inside source.cpp and take a copy of it, after that it will search for the desired function\class inside destination.cpp and inserts it in the appropriate place as described below.
+Searching for a function or class depends on signature matching. 
     
 ## Where it will be inserted? 
 ### <strong> Isolate fucntion: </strong>
@@ -45,6 +50,8 @@ The copied class from source.cpp will be pasted at the end of detination.cpp
 
 
 ## Error Scenarios:
+<strong> The following cases outputs an error message </strong>
+
 ### Isolate Function:
 <strong> Non-member Functions: </strong> 
 
@@ -58,7 +65,6 @@ The copied class from source.cpp will be pasted at the end of detination.cpp
 
 
 ### Isolate Class:
-
 <strong> Class: </strong>
 
 - Class doesn't exist in source.cpp 
@@ -69,14 +75,19 @@ The copied class from source.cpp will be pasted at the end of detination.cpp
 
 <div class="bs-callout bs-callout-info">
     <h4> Note </h4>
+    While isolating a member function, writing the class on one lines results with errors.
+    Please write the class on at least 2 lines.
     Write the class on 2 lines or more inside your .cpp file
     <div class="bs-callout bs-callout-danger">
         <code>
+        <strong> DON'T: </strong> </br>
         class x{}
         </code>
     </div>
     <div class="bs-callout bs-callout-success">
-        <code> class x{ 
+        <code style="color:green;"> 
+        <strong > DO: </strong> </br>
+        class x{ 
         </br> }
         </code>
     </div>
